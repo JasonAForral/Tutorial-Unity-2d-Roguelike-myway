@@ -44,7 +44,7 @@ public class CameraController : MonoBehaviour
 
         }
 
-        transform.Translate(new Vector3(Input.GetAxis("Horizontal"), 0.0f, Input.GetAxis("Vertical")) * panSpeed * keyboardSlideSpeed);
+        //transform.Translate(new Vector3(Input.GetAxis("Horizontal"), 0.0f, Input.GetAxis("Vertical")) * panSpeed * keyboardSlideSpeed);
 
         cameraZoom.Translate(Vector3.forward * Input.GetAxis("Mouse ScrollWheel") * zoomSpeed);
         cameraZoom.localPosition = Vector3.forward * Mathf.Round(Mathf.Clamp(cameraZoom.localPosition.z, -110f, -5f));
