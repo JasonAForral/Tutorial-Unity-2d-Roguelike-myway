@@ -167,11 +167,18 @@ namespace Completed
 			//Set the attack trigger of the player's animation controller in order to play the player's attack animation.
 			animator.SetTrigger ("playerChop");
 		}
+
+        private void OnTriggerEnter (Collider other)
+        {
+            Debug.Log(other.tag);
+			
+        }
 		
 		
 		//OnTriggerEnter2D is sent when another object enters a trigger collider attached to this object (2D physics only).
 		private void OnTriggerEnter2D (Collider2D other)
 		{
+            Debug.Log(other.tag);
 			//Check if the tag of the trigger collided with is Exit.
 			if(other.tag == "Exit")
 			{

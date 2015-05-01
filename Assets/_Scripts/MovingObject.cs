@@ -26,7 +26,7 @@ public abstract class MovingObject : MonoBehaviour {
         Vector3 end = start + new Vector3(xDir, 0f, zDir);
 
         boxCollider.enabled = false;
-        Physics.Linecast(start, end, out hit, blockingLayer);
+        bool m = Physics.Linecast(start, end, out hit, blockingLayer);
         boxCollider.enabled = true;
 
         if (null == hit.transform)
@@ -34,17 +34,20 @@ public abstract class MovingObject : MonoBehaviour {
             StartCoroutine(SmoothMovement(end));
             return true;
         }
+
         return false;
     }
 
     protected IEnumerator SmoothMovement (Vector3 end)
     {
         float sqrRemainingDistance = (transform.position - end).sqrMagnitude;
-
         while (sqrRemainingDistance > float.Epsilon)
         {
             Vector3 newPosition = Vector3.MoveTowards (rigidbody.position, end, inverseMoveTime * Time.deltaTime);
             rigidbody.MovePosition(newPosition);
+            sqrRemainingDistance = (transform.position - end).sqrMagnitude;
+            //Debug.Log(sqrRemainingDistance);
+        
             yield return null;
         }
     }
@@ -52,11 +55,13 @@ public abstract class MovingObject : MonoBehaviour {
     protected virtual void AttemptMove<T> (int xDir, int zDir)
         where T : Component
     {
+        
         RaycastHit hit;
         bool canMove = Move(xDir, zDir, out hit);
-
+        
         if (null == hit.transform)
             return;
+
         T hitComponent = hit.transform.GetComponent<T>();
 
         if (!canMove && null != hitComponent)
