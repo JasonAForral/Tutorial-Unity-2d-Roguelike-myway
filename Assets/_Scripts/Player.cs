@@ -21,6 +21,8 @@ public class Player : MovingObject {
     private Animator animator;
     private int food;
 
+    private Vector2 touchOrigin = -Vector2.one;
+
     // Use this for initialization
     protected override void Start ()
     {
@@ -49,6 +51,8 @@ public class Player : MovingObject {
         int horizontal = 0;
         int vertical = 0;
 
+#if UNITY_STANDALONE || UNITY_WEBPLAYER
+
         horizontal = (int)Input.GetAxisRaw("Horizontal");
         vertical = (int)Input.GetAxisRaw("Vertical");
 
@@ -56,6 +60,32 @@ public class Player : MovingObject {
         if (0 != horizontal)
             vertical = 0;
 
+#else
+
+        if (Input.touchCount > 0)
+        {
+            Touch myTouch = Input.touches[0];
+
+            if (TouchPhase.Began == myTouch.phase)
+            {
+                touchOrigin = myTouch.position;
+            }
+
+            else if (TouchPhase.Ended == myTouch.phase && 0 <= touchOrigin.x)
+            {
+                Vector2 touchEnd = myTouch.position;
+                float x = touchEnd.x - touchOrigin.x;
+                float y = touchEnd.y - touchOrigin.y;
+                touchOrigin.x = -1;
+                if (Mathf.Abs(x) > Mathf.Abs(y))
+                    horizontal = (x > 0 ? 1 : -1);
+                else
+                    vertical = (y > 0 ? 1 : -1);
+            }
+        }
+
+#endif
+        
         if (0 != horizontal || 0 != vertical)
         {
             AttemptMove<Wall>(horizontal, vertical);
