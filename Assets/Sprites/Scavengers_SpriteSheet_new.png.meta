@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: fbe1e7b94bb1a4a099d5bcb15a00141c
-timeCreated: 1430193329
+timeCreated: 1430454282
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
@@ -312,8 +312,8 @@ TextureImporter:
         y: 128
         width: 32
         height: 32
-      alignment: 7
-      pivot: {x: .5, y: 0}
+      alignment: 9
+      pivot: {x: .5, y: .300000012}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: Scavengers_SpriteSheet_21
       rect:

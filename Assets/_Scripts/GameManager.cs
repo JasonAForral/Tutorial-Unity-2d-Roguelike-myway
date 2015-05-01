@@ -18,9 +18,10 @@ public class GameManager : MonoBehaviour {
 
 
 
-    private int level = 1;
+    private int level = 3;
     private List<Enemy> enemies;
     private bool enemiesMoving;
+
     
     void Awake ()
     {

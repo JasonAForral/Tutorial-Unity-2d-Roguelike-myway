@@ -27,7 +27,7 @@ namespace Completed
 			//Call the RandomizeSfx function of SoundManager to play one of two chop sounds.
 			SoundManager.instance.RandomizeSfx (chopSound1, chopSound2);
 			
-			//Set spriteRenderer to the damaged wall sprite.
+			//Set spriteRendererChild to the damaged wall sprite.
 			spriteRenderer.sprite = dmgSprite;
 			
 			//Subtract loss from hit point total.
