@@ -9,6 +9,14 @@ public class Player : MovingObject {
     public int pointsPerFood = 10;
     public int pointsPerSoda = 20;
     public Text foodText;
+
+    public AudioClip moveSound1;
+    public AudioClip moveSound2;
+    public AudioClip eatSound1;
+    public AudioClip eatSound2;
+    public AudioClip drinkSound1;
+    public AudioClip drinkSound2;
+    public AudioClip gameOverSound;
     
     private Animator animator;
     private int food;
@@ -66,7 +74,6 @@ public class Player : MovingObject {
 
     private void OnTriggerEnter (Collider other)
     {
-        Debug.Log(other.tag);
         switch (other.tag)
         {
             case "Exit":
@@ -79,6 +86,7 @@ public class Player : MovingObject {
                 {
                     food += pointsPerFood;
                     UpdateFoodDisplay("+" + pointsPerFood + " ");
+                    SoundManager.instance.RandomizeSfx(drinkSound1, drinkSound2);
                     other.gameObject.SetActive(false);
                     break;
                 }
@@ -86,28 +94,11 @@ public class Player : MovingObject {
                 {
                     food += pointsPerSoda;
                     UpdateFoodDisplay("+" + pointsPerSoda + " ");
+                    SoundManager.instance.RandomizeSfx(eatSound1, eatSound2);
                     other.gameObject.SetActive(false);
                     break;
                 }
         }
-
-        // if then chain
-        //Debug.Log(other.tag);
-        //if (other.CompareTag("Exit"))
-        //{
-        //    Invoke("Restart", restartLevelDelay);
-        //    enabled = false;
-        //}
-        //else if (other.CompareTag("Food"))
-        //{
-        //    food += pointsPerFood;
-        //    other.gameObject.SetActive(false);
-        //}
-        //else if (other.CompareTag("Soda"))
-        //{
-        //    food += pointsPerFood;
-        //    other.gameObject.SetActive(false);
-        //}
     }
 
     private void Restart ()
@@ -141,7 +132,7 @@ public class Player : MovingObject {
 
         if (Move(xDir, zDir, out hit))
         {
-            // call sfx
+            SoundManager.instance.RandomizeSfx(moveSound1, moveSound2);
         }
 
         CheckIfGameOver();
@@ -152,6 +143,10 @@ public class Player : MovingObject {
     private void CheckIfGameOver ()
     {
         if (food <= 0)
+        {
+            SoundManager.instance.PlaySingle(gameOverSound);
+            SoundManager.instance.musicSource.Stop();
             GameManager.instance.GameOver();
+        }
     }
 }

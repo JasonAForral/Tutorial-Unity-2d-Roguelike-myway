@@ -7,6 +7,10 @@ public class Enemy : MovingObject {
 
     private Animator animator;
     private Transform target;
+
+    public AudioClip enemyAttack1;
+    public AudioClip enemyAttack2;
+
     private bool skipMove;
 
 	protected override void Start ()
@@ -51,6 +55,6 @@ public class Enemy : MovingObject {
 
         hitPlayer.LoseFood(playerDamage);
 
-        //throw new System.NotImplementedException();
+        SoundManager.instance.RandomizeSfx(enemyAttack1, enemyAttack2);
     }
 }

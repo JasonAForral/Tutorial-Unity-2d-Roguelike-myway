@@ -7,7 +7,7 @@ public abstract class MovingObject : MonoBehaviour {
     public LayerMask blockingLayer;
 
     private BoxCollider boxCollider;
-    private Rigidbody rigidbody;
+    private Rigidbody rigidBody;
     private float inverseMoveTime;
 
 	// Use this for initialization
@@ -15,7 +15,7 @@ public abstract class MovingObject : MonoBehaviour {
     {
 
         boxCollider = GetComponent<BoxCollider>();
-        rigidbody = GetComponent<Rigidbody>();
+        rigidBody = GetComponent<Rigidbody>();
         inverseMoveTime = 1f / moveTime;
 
     }
@@ -26,7 +26,7 @@ public abstract class MovingObject : MonoBehaviour {
         Vector3 end = start + new Vector3(xDir, 0f, zDir);
 
         boxCollider.enabled = false;
-        bool m = Physics.Linecast(start, end, out hit, blockingLayer);
+        Physics.Linecast(start, end, out hit, blockingLayer);
         boxCollider.enabled = true;
 
         if (null == hit.transform)
@@ -43,8 +43,8 @@ public abstract class MovingObject : MonoBehaviour {
         float sqrRemainingDistance = (transform.position - end).sqrMagnitude;
         while (sqrRemainingDistance > float.Epsilon)
         {
-            Vector3 newPosition = Vector3.MoveTowards (rigidbody.position, end, inverseMoveTime * Time.deltaTime);
-            rigidbody.MovePosition(newPosition);
+            Vector3 newPosition = Vector3.MoveTowards (rigidBody.position, end, inverseMoveTime * Time.deltaTime);
+            rigidBody.MovePosition(newPosition);
             sqrRemainingDistance = (transform.position - end).sqrMagnitude;
             //Debug.Log(sqrRemainingDistance);
         
@@ -62,7 +62,7 @@ public abstract class MovingObject : MonoBehaviour {
         if (null == hit.transform)
             return;
 
-        T hitComponent = hit.transform.GetComponent<T>();
+        T hitComponent = hit.transform.GetComponentInChildren<T>();
 
         if (!canMove && null != hitComponent)
             OnCantMove(hitComponent);
