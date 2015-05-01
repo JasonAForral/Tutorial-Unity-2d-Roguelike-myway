@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class Player : MovingObject {
 
@@ -7,6 +8,7 @@ public class Player : MovingObject {
     public int wallDamage = 1;
     public int pointsPerFood = 10;
     public int pointsPerSoda = 20;
+    public Text foodText;
     
     private Animator animator;
     private int food;
@@ -18,6 +20,8 @@ public class Player : MovingObject {
         animator = GetComponentInChildren<Animator>();
 
         food = GameManager.instance.playerFoodPoints;
+
+        UpdateFoodDisplay();
 
         base.Start();
     }
@@ -74,16 +78,20 @@ public class Player : MovingObject {
             case "Food":
                 {
                     food += pointsPerFood;
+                    UpdateFoodDisplay("+" + pointsPerFood + " ");
                     other.gameObject.SetActive(false);
                     break;
                 }
             case "Soda":
                 {
-                    food += pointsPerFood;
+                    food += pointsPerSoda;
+                    UpdateFoodDisplay("+" + pointsPerSoda + " ");
                     other.gameObject.SetActive(false);
                     break;
                 }
         }
+
+        // if then chain
         //Debug.Log(other.tag);
         //if (other.CompareTag("Exit"))
         //{
@@ -111,13 +119,22 @@ public class Player : MovingObject {
     {
         animator.SetTrigger("playerHit");
         food -= loss;
+        UpdateFoodDisplay("-" + loss + " ");
         CheckIfGameOver();
+    }
+
+    private void UpdateFoodDisplay (string modifier = "")
+    {
+        foodText.text = modifier + "Food: " + food;
+
     }
 
     protected override void AttemptMove<T> (int xDir, int zDir)
     {
         
         food--;
+        UpdateFoodDisplay();
+
         base.AttemptMove<T>(xDir, zDir);
 
         RaycastHit hit;

@@ -1,9 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour {
 
+    public float levelStartDelay = 2f;
     public float turnDelay = 0.1f;
     public static GameManager instance = null;
     public BoardManager boardScript;
@@ -11,18 +13,16 @@ public class GameManager : MonoBehaviour {
     [HideInInspector]
     public bool playersTurn = true;
 
-    public float levelStartDelay = 2f;
-    
+
+    private Text levelText;
+    private GameObject levelImage;
+    private int level = 1;
+    private List<Enemy> enemies;
+    private bool enemiesMoving;
+    private bool doingSetup;
 
     private Transform cameraTransform;
 
-
-
-    private int level = 3;
-    private List<Enemy> enemies;
-    private bool enemiesMoving;
-
-    
     void Awake ()
     {
 
@@ -37,27 +37,53 @@ public class GameManager : MonoBehaviour {
         enemies = new List<Enemy>();
         boardScript = GetComponent<BoardManager>();
         
-        cameraTransform = GameObject.FindGameObjectWithTag("Camera Pan").transform;
-        cameraTransform.position = new Vector3(boardScript.columns * .5f - .5f, 0f, boardScript.rows * .5f - .5f);
+
+        InitGame();
+    }
+
+    private void OnLevelWasLoaded (int index)
+    {
+        level++;
 
         InitGame();
     }
 
     void InitGame ()
     {
+        cameraTransform = GameObject.FindGameObjectWithTag("Camera Pan").transform;
+        cameraTransform.position = new Vector3(boardScript.columns * .5f - .5f, 0f, boardScript.rows * .5f - .5f);
+
+        doingSetup = true;
+
+        levelImage = GameObject.Find("LevelImage");
+        levelText = levelImage.GetComponentInChildren<Text>();
+        levelText.text = System.String.Concat("Day " + level);
+        levelImage.SetActive(true);
+
+        Invoke("HideLevelImage", levelStartDelay);
+
         enemies.Clear();
         boardScript.SetupScene(level);
     }
 
+    private void HideLevelImage ()
+    {
+        levelImage.SetActive(false);
+        doingSetup = false;
+    }
+
     public void GameOver ()
     {
+        levelText.text = System.String.Concat("After ", level, " days, you starved.");
+        levelImage.SetActive(true);
+
         enabled = false;
     }
 	
 	// Update is called once per frame
     void Update ()
     {
-        if (playersTurn || enemiesMoving)
+        if (playersTurn || enemiesMoving || doingSetup)
         return;
 
         StartCoroutine(MoveEnemeis());
